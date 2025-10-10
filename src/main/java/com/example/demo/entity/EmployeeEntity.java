@@ -1,9 +1,11 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name="employee")
+@Data
 public class EmployeeEntity {
 
     @Id
@@ -12,9 +14,4 @@ public class EmployeeEntity {
     private String  name;
     private String department;
 
-    public EmployeeEntity(Long id, String name, String department) {
-        this.id = id;
-        this.name = name;
-        this.department = department;
-    }
 }
