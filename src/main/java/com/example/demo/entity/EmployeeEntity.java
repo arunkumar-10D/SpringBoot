@@ -13,5 +13,7 @@ public class EmployeeEntity {
     private Long id;
     private String  name;
     private String department;
+    private String username;
+    private String password;
 
 }

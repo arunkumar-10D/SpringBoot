@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8090:8080"
+
+  mysql:
+    image: mysql:latest                  # Use official MySQL 8 image
+    container_name: mysql_container     # Name of the container                   # Automatically restart if it stops
+    environment:
+      MYSQL_DATABASE: mydb              # Default database to create
+      MYSQL_USER: arun                # Create a new user
+      MYSQL_PASSWORD: user        # Password for new user
+    ports:
+      - "3306:3306"                     # Map container port 3306 → host port 3306
+
+networks:
+  app-network:
+    driver: bridge

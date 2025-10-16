@@ -6,6 +6,7 @@ import com.example.demo.exception.ResourceNotFound;
 import com.example.demo.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/home")
     public String display(){
@@ -30,6 +34,7 @@ public class EmployeeController {
 
     @PostMapping("/employees")
     public EmployeeEntity create(@RequestBody EmployeeEntity employee){
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         return employeeRepository.save(employee);
     }
     @GetMapping("/employees/optional/{id}")

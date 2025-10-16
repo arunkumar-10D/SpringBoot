@@ -1,8 +1,10 @@
 package com.example.demo.security;
 
+import com.example.demo.service.CustomEmployeeService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -33,11 +35,25 @@ public class SecurityConfig {
         return http.build();
     }
 
+//    @Bean
+//    public UserDetailsService userDetails(PasswordEncoder passwordEncoder){
+//        UserDetails user = User.withUsername("arun").password(passwordEncoder.encode("arun")).roles("USER").build();
+//        return new InMemoryUserDetailsManager(user);
+//    }
+
     @Bean
-    public UserDetailsService userDetails(PasswordEncoder passwordEncoder){
-        UserDetails user = User.withUsername("arun").password(passwordEncoder.encode("arun")).roles("USER").build();
-        return new InMemoryUserDetailsManager(user);
+    public UserDetailsService userDetails(){
+        return new CustomEmployeeService();
     }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider(){
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetails());
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder(){
