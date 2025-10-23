@@ -4,17 +4,33 @@ services:
   app:
     build: .
     ports:
-      - "8090:8080"
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:mysql://mysql_container:3306/mydb
+      DB_USER: arun
+      DB_PASS: user
+    depends_on:
+      - mysql
+    networks:
+      - app-network
 
   mysql:
     image: mysql:latest                  # Use official MySQL 8 image
     container_name: mysql_container     # Name of the container                   # Automatically restart if it stops
     environment:
-      MYSQL_DATABASE: mydb              # Default database to create
-      MYSQL_USER: arun                # Create a new user
-      MYSQL_PASSWORD: user        # Password for new user
+        MYSQL_DATABASE: mydb
+        MYSQL_USER: arun
+        MYSQL_ROOT_PASSWORD: user    # Password for new user
     ports:
-      - "3306:3306"                     # Map container port 3306 → host port 3306
+      - "3307:3306"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 networks:
   app-network:
