@@ -4,7 +4,9 @@ import com.example.demo.employee.Employee;
 import com.example.demo.entity.EmployeeEntity;
 import com.example.demo.exception.ResourceNotFound;
 import com.example.demo.repository.EmployeeRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.netty.NettyWebServer;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -40,7 +42,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/employees")
-    public EmployeeEntity create(@RequestBody EmployeeEntity employee){
+    public EmployeeEntity create(@Valid @RequestBody EmployeeEntity employee){
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         return employeeRepository.save(employee);
     }
@@ -80,19 +82,7 @@ public class EmployeeController {
         return employeeRepository.findByDepartmentAndName(department,name);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String,String> exception (MethodArgumentNotValidException ex){
-        Map<String, String> error= new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(err ->
-                {
-                    String fields = ((FieldError)err).getField();
-                    String messgae = err.getDefaultMessage();
-                    error.put(fields,messgae);
-                }
-                );
-        return error;
-    }
+
 
 
 
