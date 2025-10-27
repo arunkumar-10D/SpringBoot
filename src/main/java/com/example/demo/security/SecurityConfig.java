@@ -34,7 +34,7 @@ public class SecurityConfig {
              authz
                      .requestMatchers(HttpMethod.POST,"api/v1/employee/employees").permitAll()
                      .requestMatchers("api/v1/employee/employees/**").authenticated()
-//                     .requestMatchers("/security").permitAll()    for specific request allow
+                     .requestMatchers("/security").permitAll()
                      .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())

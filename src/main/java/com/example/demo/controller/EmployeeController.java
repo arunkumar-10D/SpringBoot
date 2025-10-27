@@ -5,11 +5,18 @@ import com.example.demo.entity.EmployeeEntity;
 import com.example.demo.exception.ResourceNotFound;
 import com.example.demo.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.embedded.netty.NettyWebServer;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -61,6 +68,33 @@ public class EmployeeController {
         employeeRepository.delete(deleteData);
         return ResponseEntity.ok("successfully deleted");
     }
+
+    @GetMapping("/employees/department/{department}")
+    public List<EmployeeEntity> ListByDepartment(@PathVariable String department){
+        return employeeRepository.findByDepartment(department);
+    }
+
+    @GetMapping("/employees/filter")
+    public List<EmployeeEntity> ListByDepartmentAndName(@RequestParam("department") String department,
+                                                        @RequestParam("name") String name){
+        return employeeRepository.findByDepartmentAndName(department,name);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String,String> exception (MethodArgumentNotValidException ex){
+        Map<String, String> error= new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(err ->
+                {
+                    String fields = ((FieldError)err).getField();
+                    String messgae = err.getDefaultMessage();
+                    error.put(fields,messgae);
+                }
+                );
+        return error;
+    }
+
+
 
 
 
